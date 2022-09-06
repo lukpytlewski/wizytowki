@@ -40,34 +40,32 @@ from faker import Faker
 fake = Faker("pl_PL")
 
 
+def generate_elements(number, elements_type):
+    lst = []
+    for _ in range(number):
+        arguments = {
+            'imie': fake.first_name(),
+            'nazwisko': fake.last_name(),
+            'adres_email': fake.email(),
+            'telefon': fake.phone_number(),
+        }
+        if elements_type == Businesscontact:
+            arguments.update({
+                'nazwa_firmy': fake.company(),
+                'stanowisko': fake.job(),
+                'telefon_sluzbowy': fake.phone_number(),
+            })
+        lst.append(elements_type(**arguments))
+    return lst
+
+
 def create_contacts(rodzaj, liczba):
-    bazowe_kontakty = []
-    biznesowe_kontakty = []
+    kontakty = []
     if rodzaj == 1:
-        for i in range(liczba):
-            bazowe_kontakty.append(
-                Basecontact(
-                    imie=fake.first_name(),
-                    nazwisko=fake.last_name(),
-                    adres_email=fake.email(),
-                    telefon=fake.phone_number(),
-                )
-            )
-        print(bazowe_kontakty)
+        kontakty = generate_elements(liczba, Basecontact)
     elif rodzaj == 2:
-        for i in range(liczba):
-            biznesowe_kontakty.append(
-                Businesscontact(
-                    imie=fake.first_name(),
-                    nazwisko=fake.last_name(),
-                    adres_email=fake.email(),
-                    telefon=fake.phone_number(),
-                    nazwa_firmy=fake.company(),
-                    stanowisko=fake.job(),
-                    telefon_sluzbowy=fake.phone_number(),
-                )
-            )
-        print(biznesowe_kontakty)
+        kontakty = generate_elements(liczba, Businesscontact)
+    print(kontakty)
 
 
 if __name__ == "__main__":
