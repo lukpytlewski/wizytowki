@@ -1,10 +1,13 @@
+from faker import Faker
+
+
 class Basecontact:
     def __init__(self, imie, nazwisko, telefon, adres_email):
         self.imie = imie
         self.nazwisko = nazwisko
         self.telefon = telefon
         self.adres_email = adres_email
-        self._label_length = 0
+        self._label_length = len(self.imie) + len(self.nazwisko) + 1
 
     def contact(self):
         print(
@@ -15,7 +18,6 @@ class Basecontact:
         return f"{self.imie} {self.nazwisko} {self.adres_email}"
 
     def label_length(self):
-        self._label_length = f"{len(self.imie)} {len(self.nazwisko)}"
         return self._label_length
 
 
@@ -35,26 +37,23 @@ class Businesscontact(Basecontact):
         return f"{self.imie} {self.nazwisko} {self.adres_email} {self.telefon_sluzbowy} {self.stanowisko} {self.nazwa_firmy} "
 
 
-from faker import Faker
-
-fake = Faker("pl_PL")
-
-
 def generate_elements(number, elements_type):
     lst = []
     for _ in range(number):
         arguments = {
-            'imie': fake.first_name(),
-            'nazwisko': fake.last_name(),
-            'adres_email': fake.email(),
-            'telefon': fake.phone_number(),
+            "imie": fake.first_name(),
+            "nazwisko": fake.last_name(),
+            "adres_email": fake.email(),
+            "telefon": fake.phone_number(),
         }
         if elements_type == Businesscontact:
-            arguments.update({
-                'nazwa_firmy': fake.company(),
-                'stanowisko': fake.job(),
-                'telefon_sluzbowy': fake.phone_number(),
-            })
+            arguments.update(
+                {
+                    "nazwa_firmy": fake.company(),
+                    "stanowisko": fake.job(),
+                    "telefon_sluzbowy": fake.phone_number(),
+                }
+            )
         lst.append(elements_type(**arguments))
     return lst
 
@@ -69,6 +68,9 @@ def create_contacts(rodzaj, liczba):
 
 
 if __name__ == "__main__":
+
+    fake = Faker("pl_PL")
+
     create_contacts(2, 11)
 
     osoba01 = Basecontact(
